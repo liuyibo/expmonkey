@@ -1,0 +1,44 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "expmonkey"
+version = "0.0.34"
+authors = [
+    { name = "liuyibo", email = "liuyibo1994@qq.com" },
+]
+maintainers = [
+    { name = "liuyibo", email = "liuyibo1994@qq.com" },
+]
+description="A git worktree-based CLI tool for efficient management and navigation of multiple isolated experiments in parallel development workflows"
+readme = "README.md"
+requires-python = ">=3.5"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: POSIX",
+]
+dependencies = [
+    "colored",
+    "argcomplete",
+    "pygit2<1.7.0; python_version < '3.7.0'",
+    "pygit2; python_version >= '3.7.0'",
+]
+
+keywords = ["experiment management", "git worktree", "research workflow", "development tools", "version control", "branch management", "command-line interface", "parallel development", "code branching", "workspace management", "git enhancements", "scientific experiments", "machine learning experiments", "project organization", "code experiments", "git branches"]
+
+[project.urls]
+Homepage = "https://github.com/liuyibo/expmonkey"
+Issues = "https://github.com/liuyibo/expmonkey/issues"
+
+[project.scripts]
+em = "expmonkey:cli"
+expmonkey = "expmonkey:cli"
+em-init-script = "expmonkey:print_init_script"
+
+[tool.hatch.build.targets.wheel]
+include = [
+  "/expmonkey/*.py",
+]
