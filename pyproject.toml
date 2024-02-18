@@ -34,7 +34,6 @@ Homepage = "https://github.com/liuyibo/expmonkey"
 Issues = "https://github.com/liuyibo/expmonkey/issues"
 
 [project.scripts]
-em = "expmonkey:cli"
 expmonkey = "expmonkey:cli"
 em-init-script = "expmonkey:print_init_script"
 

@@ -358,11 +358,15 @@ def _check_branch(branch, in_worktree=None, in_branch=None):
             _die('Directory "{}" already exists'.format(os.path.join(basedir, branch)))
 
 
-init_script = '''
-function em() {
+def print_init_script():
+    bash_argcomplete_script = argcomplete.shellcode(["em", "expmonkey"], shell='bash')
+    zsh_argcomplete_script = argcomplete.shellcode(["em", "expmonkey"], shell='zsh')
+
+    init_script = '''
+function expmonkey() {
     _EM_OUTPUT_NEW_PWD=$(mktemp)
 
-    _EM_OUTPUT_NEW_PWD=$_EM_OUTPUT_NEW_PWD expmonkey $@
+    _EM_OUTPUT_NEW_PWD=$_EM_OUTPUT_NEW_PWD command expmonkey $@
     if [[ $? -eq 0 ]]; then
         _EM_NEW_PWD=$(cat $_EM_OUTPUT_NEW_PWD)
         if [[ $_EM_NEW_PWD != "" && $_EM_NEW_PWD != $PWD ]]; then
@@ -373,22 +377,25 @@ function em() {
     rm -rf $_EM_OUTPUT_NEW_PWD
 }
 
-if [[ -n "$BASH" || $0 == "-bash" ]]; then
-    eval "$(register-python-argcomplete em)"
-    eval "$(register-python-argcomplete expmonkey)"
+if ! command -v em > /dev/null; then
+    function em() {
+        expmonkey $@
+    }
 fi
+
+
+if [[ -n "$BASH" || $0 == "-bash" ]]; then
+    ''' + bash_argcomplete_script + '''
+fi
+
 if [[ -n "$ZSH" || -n "$ZSH_NAME" || $0 == "-zsh" || $0 == "zsh" ]]; then
     autoload -U bashcompinit
     bashcompinit
-    eval "$(register-python-argcomplete em)"
-    eval "$(register-python-argcomplete expmonkey)"
+    ''' + zsh_argcomplete_script + '''
 fi
 
 export EXPMONKEY_INITED=1
-'''
-
-
-def print_init_script():
+    '''
     print(init_script)
 
 
@@ -557,7 +564,7 @@ def main():
 def cli():
     if not os.getenv('EXPMONKEY_INITED'):
         print(colored.stylize('''Expmonkey autocompletion is not enabled
-Please add "source em-init.sh" to your ~/.bashrc or ~/.zshrc
+Please add 'eval "$(em-init-script)"' to your ~/.bashrc or ~/.zshrc
 You may want to install fzf for better experience''', colored.fg('red')))
         raise RuntimeError('Expmonkey is not inited')
     main()

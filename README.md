@@ -37,7 +37,7 @@ pip3 install expmonkey
 
 2. (Optional) Weave `em-init-script` into your shell's tapestry for autocompletion and arcane abilities:
 ```bash
-echo 'source <(em-init-script)' >> ~/.bashrc
+echo 'eval "$(em-init-script)"' >> ~/.bashrc
 ```
 
 3. (Optional) Summon `fzf` for a mystical user experience:
