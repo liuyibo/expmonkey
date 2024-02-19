@@ -269,11 +269,11 @@ def _clone_repository(repo_url, path, tmp_path):
 
 def _get_branch(path=os.getcwd()):
     basedir = _get_basedir()
-    branch = os.path.relpath(path, basedir)
-    if not branch.strip('./'):
+    branch = os.path.relpath(path, basedir).strip('.').strip('/')
+    repo = _get_repo()
+    if branch not in repo.list_local_branches():
         return None
-    repo = _get_repo(path)
-    return repo.get_current_branch()
+    return branch
 
 
 def get_branch():
