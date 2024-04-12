@@ -22,7 +22,7 @@ def _die(msg):
 
 
 def _get_basedir(path=os.getcwd()):
-    path = os.path.abspath(path)
+    path = os.path.realpath(path)
     while True:
         if os.path.exists(os.path.join(path, '.em')):
             return path
@@ -32,7 +32,7 @@ def _get_basedir(path=os.getcwd()):
 
 
 def _get_parent_git_path(path=os.getcwd()):
-    path = os.path.abspath(path)
+    path = os.path.realpath(path)
     relpath = './'
     while True:
         if os.path.exists(os.path.join(path, '.git')):
@@ -94,7 +94,7 @@ class BaseRepository(object):
         prev_head = None
         for line in self.check_output('git', 'worktree', 'list', '--porcelain').splitlines():
             if line.startswith('worktree'):
-                prev_path = line.split()[1]
+                prev_path = os.path.realpath(line.split()[1])
             if line.startswith('HEAD'):
                 prev_head = line.split()[1]
             if line.startswith('branch'):
@@ -298,7 +298,7 @@ def _list_checked_out_branches():
     basedir = _get_basedir()
     worktrees = repo.list_worktrees()
 
-    basedir = os.path.abspath(basedir)
+    basedir = os.path.realpath(basedir)
     branches = []
     for worktree in worktrees:
         if os.path.join(basedir, worktree['branch']) == worktree['path']:
@@ -315,7 +315,7 @@ def _check_branch(branch, in_worktree=None, in_branch=None):
     basedir = _get_basedir()
     worktrees = repo.list_worktrees()
 
-    basedir = os.path.abspath(basedir)
+    basedir = os.path.realpath(basedir)
     found_in_worktree = False
     for worktree in worktrees:
         if worktree['branch'] == branch:
@@ -598,7 +598,7 @@ def init(args):
     if _is_git_repo(repo):
         os.makedirs('.em', exist_ok=True)
         with open('.em/repo', 'w') as f:
-            f.write(os.path.abspath(repo))
+            f.write(os.path.realpath(repo))
     else:
         os.makedirs('.em/repo.tmp', exist_ok=True)
         _clone_repository(repo, '.em/repo', tempfile.mkdtemp(dir='.em/repo.tmp'))
